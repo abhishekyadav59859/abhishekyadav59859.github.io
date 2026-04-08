@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Abhishek Yadav — ML & Computing</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #f0f0f0;
+    --muted: #888899;
+    --muted2: #555566;
+    --accent: #7ee8a2;
+    --accent2: #5bc8f5;
+    --accent3: #f5a623;
+    --glow: rgba(126,232,162,0.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 3rem;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(18px);
+    background: rgba(10,10,15,0.75);
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── SECTIONS ── */
+  section { position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 3rem 4rem;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.6s 0.2s forwards;
+  }
+  .hero-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3.2rem, 7vw, 6.5rem);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    opacity: 0; animation: fadeUp 0.7s 0.35s forwards;
+  }
+  .hero-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    margin-top: 1.5rem;
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 540px;
+    line-height: 1.75;
+    font-weight: 400;
+    opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+  }
+  .hero-cta {
+    margin-top: 2.5rem;
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.7s 0.65s forwards;
+  }
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.75rem;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a0f;
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: #9ef5bc; transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border2);
+  }
+  .btn-outline:hover { color: var(--text); border-color: var(--muted2); }
+
+  .hero-meta {
+    margin-top: 4rem;
+    display: flex; gap: 3rem; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.7s 0.8s forwards;
+  }
+  .meta-item { display: flex; flex-direction: column; gap: 0.25rem; }
+  .meta-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted2); }
+  .meta-value { font-size: 0.9rem; color: var(--muted); }
+
+  /* floating grid bg */
+  .hero-grid {
+    position: absolute; right: 0; top: 0; bottom: 0; width: 50%;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: linear-gradient(to left, rgba(0,0,0,0.3), transparent);
+    pointer-events: none;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    max-width: 1100px; margin: 0 auto;
+    padding: 0 3rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    padding: 6rem 3rem;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .about-text h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.8rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .about-text p { color: var(--muted); line-height: 1.85; font-size: 0.95rem; margin-bottom: 1rem; font-weight: 400; }
+  .about-stats { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 1rem; }
+  .stat-row {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    display: flex; justify-content: space-between; align-items: center;
+    transition: border-color 0.2s;
+  }
+  .stat-row:hover { border-color: var(--border2); }
+  .stat-num { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--accent); line-height: 1; }
+  .stat-desc { font-size: 0.82rem; color: var(--muted); text-align: right; }
+
+  /* ── SKILLS ── */
+  #skills {
+    padding: 6rem 3rem;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 0; }
+  .skill-card {
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    transition: all 0.25s;
+  }
+  .skill-card:hover { border-color: var(--accent); background: var(--surface2); transform: translateY(-3px); }
+  .skill-icon { font-size: 1.3rem; margin-bottom: 0.75rem; }
+  .skill-title { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); margin-bottom: 0.6rem; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.05);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* ── PROJECTS ── */
+  #projects {
+    padding: 6rem 3rem;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .projects-list { display: flex; flex-direction: column; gap: 0; margin-top: 2rem; }
+  .project-item {
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: 3fr 1fr;
+    gap: 2rem; align-items: start;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .project-item:last-child { border-bottom: 1px solid var(--border); }
+  .project-item:hover .project-title { color: var(--accent); }
+  .proj-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted2);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+  }
+  .project-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+    transition: color 0.2s;
+  }
+  .project-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.75; font-weight: 400; }
+  .project-tech { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+  .project-right { display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; padding-top: 1.5rem; }
+  .proj-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 99px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+  }
+  .proj-badge.live { border-color: var(--accent); color: var(--accent); }
+  .proj-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 0.4rem;
+    transition: color 0.2s;
+  }
+  .proj-link:hover { color: var(--accent2); }
+
+  /* ── COURSES ── */
+  #courses {
+    padding: 6rem 3rem;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .courses-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.75rem; margin-top: 2rem; }
+  .course-pill {
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--surface);
+    font-size: 0.8rem;
+    color: var(--muted);
+    transition: all 0.2s;
+    text-align: center;
+    font-weight: 400;
+  }
+  .course-pill:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* ── CONTACT ── */
+  #contact {
+    padding: 6rem 3rem 8rem;
+    max-width: 1100px; margin: 0 auto;
+    text-align: center;
+  }
+  #contact h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+  #contact p { color: var(--muted); font-size: 0.95rem; margin-bottom: 2.5rem; font-weight: 400; }
+  .contact-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+  .contact-link {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    text-decoration: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+    background: var(--surface);
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 3rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted2);
+    letter-spacing: 0.08em;
+    max-width: 1100px; margin: 0 auto;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero, #about, #skills, #projects, #courses, #contact { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .project-item { grid-template-columns: 1fr; }
+    .project-right { align-items: flex-start; }
+    .courses-grid { grid-template-columns: repeat(2,1fr); }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+  @media (max-width: 480px) {
+    .skills-grid { grid-template-columns: 1fr; }
+    .courses-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#hero">AY</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#courses">Courses</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <p class="hero-tag">// B.Tech Mathematics & Computing · NIT Mizoram</p>
+  <h1 class="hero-name">Abhishek<br><em>Yadav</em></h1>
+  <p class="hero-sub">
+    Building intelligent systems at the intersection of mathematics and machine learning.
+    Deployed real-world AI apps · Exploring ML research · Open to internships.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="/cdn-cgi/l/email-protection#1e7f7c76776d767b75677f7a7f682b27262b275e79737f7772307d7173" class="btn btn-outline">Get in Touch</a>
+    <a href="https://github.com/abhishekyadav59859" target="_blank" class="btn btn-outline">GitHub →</a>
+  </div>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">Currently</span>
+      <span class="meta-value">NIT Mizoram, 3rd Sem</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Primary Stack</span>
+      <span class="meta-value">Python · TensorFlow · FastAPI</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Live App</span>
+      <span class="meta-value"><a href="https://plant-using-ht.onrender.com" target="_blank" style="color:var(--accent);text-decoration:none;">plant-using-ht.onrender.com ↗</a></span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label reveal">About</p>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <h2>Math nerd who ships real AI.</h2>
+      <p>
+        I'm a B.Tech student in Mathematics and Computing at NIT Mizoram, 
+        passionate about machine learning, scientific computing, and building
+        things that actually work in production.
+      </p>
+      <p>
+        From training CNN models for plant disease detection to designing
+        normalized relational databases and implementing numerical optimization
+        algorithms in MATLAB — I like to go deep on both the math and the engineering.
+      </p>
+      <p>
+        Coordinator of the Mathematics and Computing Society (MACS) at NIT Mizoram.
+        Currently seeking research internship opportunities.
+      </p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-row">
+        <div class="stat-num">2024</div>
+        <div class="stat-desc">Started building<br>real projects</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-num">5+</div>
+        <div class="stat-desc">ML & data<br>tools used</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label reveal">Technical Skills</p>
+  <div class="skills-grid reveal">
+    <div class="skill-card">
+      <div class="skill-icon">🐍</div>
+      <div class="skill-title">Languages</div>
+      <div class="skill-tags">
+        <span class="tag">Python</span><span class="tag">C</span><span class="tag">C++</span>
+        <span class="tag">JavaScript</span><span class="tag">MATLAB</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🤖</div>
+      <div class="skill-title">ML / AI</div>
+      <div class="skill-tags">
+        <span class="tag">TensorFlow</span>
+        <span class="tag">NumPy</span><span class="tag">Pandas</span>
+        <span class="tag">Matplotlib</span><span class="tag">Kaggle</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">⚙️</div>
+      <div class="skill-title">Backend</div>
+      <div class="skill-tags">
+        <span class="tag">FastAPI</span><span class="tag">Flask</span>
+        <span class="tag">MySQL</span><span class="tag">RESTful APIs</span>
+        <span class="tag">SQL</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🌐</div>
+      <div class="skill-title">Web</div>
+      <div class="skill-tags">
+        <span class="tag">HTML</span><span class="tag">CSS</span>
+        <span class="tag">JavaScript</span><span class="tag">Jinja2</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🛠</div>
+      <div class="skill-title">Tools</div>
+      <div class="skill-tags">
+        <span class="tag">Git</span><span class="tag">GitHub</span>
+        <span class="tag">Linux</span><span class="tag">VS Code</span>
+        <span class="tag">Jupyter</span><span class="tag">Colab</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">∑</div>
+      <div class="skill-title">Concepts</div>
+      <div class="skill-tags">
+        <span class="tag">CNN</span><span class="tag">EDA</span>
+        <span class="tag">Numerical Optimization</span>
+        <span class="tag">Fairness in ML</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label reveal">Projects</p>
+  <div class="projects-list">
+
+    <div class="project-item reveal">
+      <div>
+        <p class="proj-num">01</p>
+        <h3 class="project-title">AI Plant Disease Detection</h3>
+        <p class="project-desc">
+          A fully deployed AI web app that detects plant diseases from leaf images using a trained TensorFlow CNN model.
+          Integrated Gemini API for treatment recommendations and Wikipedia API for disease context.
+          Built with FastAPI backend, PIL/NumPy image pipeline, Jinja2 templates, and automated model loading via gdown.
+        </p>
+        <div class="project-tech">
+          <span class="tag">TensorFlow</span><span class="tag">FastAPI</span>
+          <span class="tag">CNN</span><span class="tag">Gemini API</span>
+          <span class="tag">PIL</span><span class="tag">Python</span>
+        </div>
+      </div>
+      <div class="project-right">
+        <span class="proj-badge live">● Live</span>
+        <a href="https://plant-using-ht.onrender.com" target="_blank" class="proj-link">Live App ↗</a>
+        <a href="https://github.com/abhishekyadav59859/plant_using_ht" target="_blank" class="proj-link">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="project-item reveal">
+      <div>
+        <p class="proj-num">02</p>
+        <h3 class="project-title">LernVelocity — Course Marketplace</h3>
+        <p class="project-desc">
+          Full-stack course marketplace with normalized MySQL schema covering courses, enrollments, payments,
+          and certifications. Features role-based access control, quiz management, progress tracking,
+          and secure subscription workflows.
+        </p>
+        <div class="project-tech">
+          <span class="tag">Flask</span><span class="tag">MySQL</span>
+          <span class="tag">Python</span><span class="tag">JavaScript</span>
+          <span class="tag">HTML/CSS</span>
+        </div>
+      </div>
+      <div class="project-right">
+        <span class="proj-badge">DBMS</span>
+        <a href="https://github.com/abhishekyadav59859" target="_blank" class="proj-link">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="project-item reveal">
+      <div>
+        <p class="proj-num">03</p>
+        <h3 class="project-title">Numerical Methods & Optimization</h3>
+        <p class="project-desc">
+          Implemented root-finding algorithms (Bisection, Newton-Raphson, Secant, Fixed-Point Iteration) in MATLAB
+          with convergence rate analysis. Developed non-linear optimization programs using gradient-based methods,
+          applied to curve fitting, interpolation, and ODE solving.
+        </p>
+        <div class="project-tech">
+          <span class="tag">MATLAB</span><span class="tag">Scientific Computing</span>
+          <span class="tag">Numerical Analysis</span>
+        </div>
+      </div>
+      <div class="project-right">
+        <span class="proj-badge">Academic</span>
+        <a href="https://github.com/abhishekyadav59859/numerical-analysis-matlab" target="_blank" class="proj-link">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="project-item reveal">
+      <div>
+        <p class="proj-num">04</p>
+        <h3 class="project-title">ML Modelling — Kaggle Experiments</h3>
+        <p class="project-desc">
+          End-to-end ML pipeline on real-world datasets: EDA with Pandas/NumPy, training classification models
+          (Logistic Regression, Decision Trees, SVM) with precision/recall/F1 metrics, cross-validation,
+          hyperparameter tuning, and bias analysis across demographic groups.
+        </p>
+        <div class="project-tech">
+          <span class="tag">scikit-learn</span><span class="tag">Pandas</span>
+          <span class="tag">NumPy</span><span class="tag">Matplotlib</span>
+          <span class="tag">Jupyter</span>
+        </div>
+      </div>
+      <div class="project-right">
+        <span class="proj-badge">Personal</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- COURSES -->
+<section id="courses">
+  <p class="section-label reveal">Key Courses</p>
+  <div class="courses-grid reveal">
+    <div class="course-pill">Data Structures & Algorithms</div>
+    <div class="course-pill">Numerical Methods</div>
+    <div class="course-pill">Database Management Systems</div>
+    <div class="course-pill">Linear Algebra</div>
+    <div class="course-pill">Probability & Statistics</div>
+    <div class="course-pill">Discrete Mathematics</div>
+    <div class="course-pill">Scientific Computing</div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <h2 class="reveal">Let's work<br><em style="font-style:italic;color:var(--accent);">together.</em></h2>
+  <p class="reveal">Open to research internships, collaborations, and interesting ML problems.</p>
+  <div class="contact-links reveal">
+    <a href="mailto:abhishekyadav59859@gmail.com" class="contact-link">
+      <span>✉</span> abhishekyadav59859@gmail.com
+    </a>
+    <a href="https://github.com/abhishekyadav59859" target="_blank" class="contact-link">
+      <span>◆</span> GitHub
+    </a>
+    <a href="https://linkedin.com/in/abhishekyadav59859" target="_blank" class="contact-link">
+      <span>◈</span> LinkedIn
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Abhishek Yadav · NIT Mizoram</span>
+  <span>B.Tech Mathematics &amp; Computing · 2028</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
